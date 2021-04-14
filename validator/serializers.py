@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class CommonSerializer(serializers.Serializer):
+class BaseSerializer(serializers.Serializer):
     invalid_trigger = serializers.CharField(required=True)
     key = serializers.CharField(required=True, max_length=200)
     reuse = serializers.BooleanField(default=True)
@@ -12,11 +12,10 @@ class CommonSerializer(serializers.Serializer):
     values = serializers.ListField(required=True, allow_empty=True)
 
 
-class FiniteValuesEntitySerializer(CommonSerializer):
-    name = serializers.CharField(required=True, max_length=200)
+class FiniteValuesEntitySerializer(BaseSerializer):
     supported_values = serializers.ListField(required=True, allow_empty=True)
 
 
-class NumericEntitySerializer(CommonSerializer):
+class NumericEntitySerializer(BaseSerializer):
     constraint = serializers.CharField(required=True, max_length=200)
     var_name = serializers.CharField(required=True, max_length=10)
