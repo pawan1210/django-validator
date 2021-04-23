@@ -37,7 +37,7 @@ class Validator:
             if pick_first:
                 self.parameters = {}
                 if (
-                    values[0]["entity_type"] == entity_type
+                    values[0]["entity_type"] in entity_type
                     and values[0]["value"] in supported_values
                 ):
                     self.parameters[key] = values[0]["value"]
@@ -62,7 +62,7 @@ class Validator:
                 result = self.compare_with_conjunction(
                     entity["value"], parsed_constraints, conjunction
                 )
-                if result:
+                if result and entity["entity_type"] in entity_type:
                     if self.parameters.get(key) == None:
                         self.parameters[key] = []
                     self.parameters[key].append(entity["value"])
