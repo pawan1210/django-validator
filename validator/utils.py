@@ -15,18 +15,6 @@ class Validator:
         if len(supported_values) == 0 or len(values) == 0:
             self.partially_filled = False
             self.trigger = kwargs["invalid_trigger"]
-
-        elif pick_first:
-            if (
-                values[0]["entity_type"] == entity_type
-                and values[0]["value"] in supported_values
-            ):
-                self.filled = True
-                self.partially_filled = False
-                self.parameters[key] = values[0]["value"]
-            else:
-                self.trigger = kwargs["invalid_trigger"]
-
         else:
             flag = True
             for entity in values:
@@ -42,8 +30,17 @@ class Validator:
 
             self.filled = flag
             self.partially_filled = not flag
+
             if self.partially_filled:
                 self.trigger = kwargs["invalid_trigger"]
+
+            if pick_first:
+                self.parameters = {}
+                if (
+                    values[0]["entity_type"] == entity_type
+                    and values[0]["value"] in supported_values
+                ):
+                    self.parameters[key] = values[0]["value"]
 
         return self.get_response()
 
@@ -58,17 +55,6 @@ class Validator:
         if len(values) == 0:
             self.partially_filled = False
             self.trigger = kwargs["invalid_trigger"]
-
-        elif pick_first:
-            result = self.compare_with_conjunction(
-                values[0]["value"], parsed_constraints, conjunction
-            )
-            if result:
-                self.filled = True
-                self.partially_filled = False
-                self.parameters[key] = values[0]["value"]
-            else:
-                self.trigger = kwargs["invalid_trigger"]
 
         else:
             flag = True
@@ -85,8 +71,16 @@ class Validator:
 
             self.filled = flag
             self.partially_filled = not flag
+
             if self.partially_filled:
                 self.trigger = kwargs["invalid_trigger"]
+
+            if pick_first:
+                self.parameters = {}
+                if self.compare_with_conjunction(
+                    values[0]["value"], parsed_constraints, conjunction
+                ):
+                    self.parameters[key] = values[0]["value"]
 
         return self.get_response()
 
